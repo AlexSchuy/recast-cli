@@ -30,9 +30,6 @@ class Config(object):
                 "init_token": os.environ.get("YADAGE_SCHEMA_LOAD_TOKEN"),
                 "auth_location": os.environ.get("PACKTIVITY_AUTH_LOCATION"),
             },
-            "kubernetes": {
-                "metadata": {"short_description": "runs on a Kubernetes cluster"}
-            },
         }
 
     @property

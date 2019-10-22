@@ -8,7 +8,10 @@ import pkg_resources
 import getpass
 
 from ..config import config
-from ..testing import validate_entry
+# TODO: Import recast-workflow to enable catalogue ability
+# from recast-workflow.
+
+# from ..testing import validate_entry
 
 default_meta = {"author": "unknown", "short_description": "no description"}
 
@@ -23,11 +26,13 @@ def catalogue():
 def check(name):
     data = config.catalogue[name]
     assert data
+    '''
     valid = validate_entry(data)
     if not valid:
         click.secho("Sadly something is wrong :(")
     else:
         click.secho("Nice job! Everything looks good.", fg="green")
+    '''
 
 
 @catalogue.command()

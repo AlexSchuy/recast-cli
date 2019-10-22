@@ -3,14 +3,15 @@ from ..config import config
 from ..backends import check_backend
 
 
-@click.group(help="The RECAST computational backends.")
+@click.group(help="The RECAST computational backends")
 def backends():
     pass
 
 
 @backends.command()
-@click.option("--check/--no-check", default=False)
+@click.option("--check/--no-check", default=False, help='Checks if the backend is available.')
 def ls(check):
+    """backends ls command"""
     fmt = "{0:20}{1:60}{2:10}"
     click.secho(fmt.format("NAME", "DESCRIPTION", "STATUS"))
     for k, v in config.backends.items():
