@@ -10,7 +10,6 @@ import getpass
 from ..config import config
 # TODO: Import recast-workflow to enable catalogue ability
 
-# from ..testing import validate_entry
 
 default_meta = {"author": "unknown", "short_description": "no description"}
 

@@ -3,7 +3,7 @@ from ..config import config
 from ..backends import check_backend
 
 
-@click.group(help="The RECAST computational backends")
+@click.group(help="The RECAST Computational Backends")
 def backends():
     pass
 

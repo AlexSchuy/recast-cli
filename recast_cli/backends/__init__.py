@@ -228,6 +228,12 @@ def check_async(name, backend):
 
 
 def check_backend(backend):
+    """
+    Returns True if the backend is available, otherwise False.
+
+    :param backend: the backend to check
+    :return: True if available, otherwise False
+    """
     if backend == "kubernetes":
         try:
             from kubernetes import client as k8sclient
