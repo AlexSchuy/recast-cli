@@ -7,7 +7,7 @@ from .subcommands.run import run
 
 @click.group()
 def recast_cli():
-    """RECAST Project command line interface"""
+    """THe RECAST Project Command Line Interface"""
     pass
 
 

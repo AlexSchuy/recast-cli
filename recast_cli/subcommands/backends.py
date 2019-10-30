@@ -8,10 +8,14 @@ def backends():
     pass
 
 
-@backends.command()
+@backends.command(short_help='lists all backends')
 @click.option("--check/--no-check", default=False, help='Checks if the backend is available.')
 def ls(check):
-    """backends ls command"""
+    """
+    backends ls command
+
+    Lists all possible computational backends on this machine.
+    """
     fmt = "{0:20}{1:60}{2:10}"
     click.secho(fmt.format("NAME", "DESCRIPTION", "STATUS"))
     for k, v in config.backends.items():

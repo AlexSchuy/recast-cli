@@ -9,7 +9,6 @@ import getpass
 
 from ..config import config
 # TODO: Import recast-workflow to enable catalogue ability
-from ...recast-workflow.
 
 # from ..testing import validate_entry
 
