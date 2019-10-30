@@ -1,0 +1,4 @@
+[submodule "recast_cli/workflow"]
+	path = recast_cli/workflow
+	url = https://github.com/AlexSchuy/recast-workflow.git
+	branch = dev
