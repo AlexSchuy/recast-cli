@@ -8,8 +8,8 @@ import pkg_resources
 import getpass
 
 from ..config import config
-# TODO: Import recast_workflow to enable catalogue ability
 from ..workflow.recast_workflow.common import utils
+from ..workflow.recast_workflow.scripts import catalogue as ctlg
 
 default_meta = {"author": "unknown", "short_description": "no description"}
 
@@ -18,11 +18,15 @@ default_meta = {"author": "unknown", "short_description": "no description"}
 def catalogue():
     pass
 
-
+# TODO: How the output should be formatted?
 @catalogue.command()
 def inputs():
-    click.echo(utils.get_common_inputs())
+    click.echo(utils.get_common_inputs(include_descriptions=True))
 
+
+@catalogue.command()
+def combinations():
+    click.echo(ctlg.get_valid_combinations(utils.get_common_inputs(include_descriptions=True)))
 
 '''
 Below are deprecated commands. Delete if necessary.
