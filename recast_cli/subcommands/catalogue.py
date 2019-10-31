@@ -8,8 +8,8 @@ import pkg_resources
 import getpass
 
 from ..config import config
-# TODO: Import recast-workflow to enable catalogue ability
-
+# TODO: Import recast_workflow to enable catalogue ability
+from ..workflow.recast_workflow.common import utils
 
 default_meta = {"author": "unknown", "short_description": "no description"}
 
@@ -17,6 +17,16 @@ default_meta = {"author": "unknown", "short_description": "no description"}
 @click.group(help="The RECAST Analysis Catalogue")
 def catalogue():
     pass
+
+
+@catalogue.command()
+def inputs():
+    click.echo(utils.get_common_inputs())
+
+
+'''
+Below are deprecated commands. Delete if necessary.
+'''
 
 
 @catalogue.command()
