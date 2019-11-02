@@ -3,18 +3,20 @@ from ..config import config
 from ..backends import check_backend
 
 
-@click.group(help="The RECAST Computational Backends")
-def backends():
-    pass
-
-
-@backends.command(short_help='lists all backends')
+@click.command(short_help='lists all backends')
 @click.option("--check/--no-check", default=False, help='Checks if the backend is available.')
-def ls(check):
+def backends(check):
     """
-    backends ls command
-
     Lists all possible computational backends on this machine.
+
+    """
+    ls(check)
+
+
+def ls(check):
+    """Prints all backends.
+
+    :param check: returns backends availability if true
     """
     fmt = "{0:20}{1:60}{2:10}"
     click.secho(fmt.format("NAME", "DESCRIPTION", "STATUS"))

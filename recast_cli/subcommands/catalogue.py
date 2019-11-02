@@ -21,12 +21,14 @@ def catalogue():
 # TODO: How the output should be formatted?
 @catalogue.command()
 def inputs():
+    """All parameters needed for generating valid combinations.
+    """
     click.echo(utils.get_common_inputs(include_descriptions=True))
 
 
 @catalogue.command()
 def combinations():
-    click.echo(ctlg.get_valid_combinations(utils.get_common_inputs(include_descriptions=True)))
+    pass
 
 '''
 Below are deprecated commands. Delete if necessary.
