@@ -18,17 +18,39 @@ default_meta = {"author": "unknown", "short_description": "no description"}
 def catalogue():
     pass
 
-# TODO: How the output should be formatted?
+
+# TODO: Add description/no description option
 @catalogue.command()
 def inputs():
-    """All parameters needed for generating valid combinations.
+    """Parameters available for generating valid combinations.
     """
-    click.echo(utils.get_common_inputs(include_descriptions=True))
+    params = utils.get_common_inputs(include_descriptions=True)
+    fmt = '{0:20}{1:60}{2:40}'
+    click.secho(fmt.format(
+        'INPUT',
+        'DESCRIPTION',
+        'STEPS'
+    ))
+    for key, value in params.items():
+        click.secho(
+            fmt.format(
+                key,
+                value.get('description', 'no description'),
+                str(value.get('steps', 'no steps'))
+            )
+        )
 
 
 @catalogue.command()
 def combinations():
-    pass
+    """
+    Returns all valid catalogue combinations for the given analysis.
+    """
+    valid = ctlg.get_valid_combinations({
+        'analysis_id': 1609448
+    })
+    click.echo(valid)
+
 
 '''
 Below are deprecated commands. Delete if necessary.

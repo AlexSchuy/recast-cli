@@ -3,12 +3,13 @@ from ..config import config
 from ..backends import check_backend
 
 
-@click.command(short_help='lists all backends')
+@click.command(short_help='List All Backends')
 @click.option("--check/--no-check", default=False, help='Checks if the backends are available.')
 def backends(check):
     """
     Lists all possible computational backends on this machine.
 
+    All backends are configured in ./config.py
     """
     ls(check)
 
