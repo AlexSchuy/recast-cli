@@ -4,7 +4,7 @@ from ..backends import check_backend
 
 
 @click.command(short_help='lists all backends')
-@click.option("--check/--no-check", default=False, help='Checks if the backend is available.')
+@click.option("--check/--no-check", default=False, help='Checks if the backends are available.')
 def backends(check):
     """
     Lists all possible computational backends on this machine.
@@ -24,7 +24,7 @@ def ls(check):
         if check:
             status = "OK" if check_backend(k) else "NOT OK"
         else:
-            status = ""
+            status = "N/A"
         default = {"short_description": "no description given"}
         click.secho(
             fmt.format(k, v.get("metadata", default)["short_description"], status)
