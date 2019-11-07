@@ -47,7 +47,7 @@ def combinations():
     Returns all valid catalogue combinations for the given analysis.
     """
     valid = ctlg.get_valid_combinations({
-        'analysis_id': 1609448
+        'analysis_id': '1609448'
     })
     click.echo(valid)
 
