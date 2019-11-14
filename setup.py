@@ -4,7 +4,8 @@ setup(
     name='recast_cli',
     version='0.0.1',
     install_requires=[
-        'Click', 'PyYAML'
+        'Click',
+        'PyYAML'
     ],
     entry_points='''
         [console_scripts]
