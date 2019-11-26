@@ -1,3 +1,5 @@
+from typing import Dict
+
 import click
 import yaml
 import os
@@ -10,6 +12,7 @@ import getpass
 from ..config import config
 from ..workflow.recast_workflow.common import utils
 from ..workflow.recast_workflow.scripts import catalogue as ctlg
+from ..workflow.recast_workflow.scripts import workflow
 
 default_meta = {"author": "unknown", "short_description": "no description"}
 
@@ -47,14 +50,32 @@ def combinations():
     Returns all valid catalogue combinations for the given analysis.
     """
     valid = ctlg.get_valid_combinations({
-        'analysis_id': '1609448'
     })
+    # TODO: error occured when typing in the analysis_id
     click.echo(valid)
+    click.confirm('Do you want to start the "make" process?', abort=True)
+
+    workflow_index = click.prompt('Please select the combination', type=int) - 1
+    while not 0 <= workflow_index < len(valid):
+        workflow_index = click.prompt('Invalid index. Try again', type=int) - 1
+
+    env = valid[workflow_index]
+    name = []
+    '''
+    for k, v in env:
+        name =
+    '''
+
+
+def make(environment: Dict[str, str]):
+    # TODO: Problem
+
+    click.echo(workflow.make_workflow(environment.keys, environment.values, environment))
 
 
 '''
 Below are deprecated commands. Delete if necessary.
-'''
+
 
 
 @catalogue.command()
@@ -62,13 +83,13 @@ Below are deprecated commands. Delete if necessary.
 def check(name):
     data = config.catalogue[name]
     assert data
-    '''
+    
     valid = validate_entry(data)
     if not valid:
         click.secho("Sadly something is wrong :(")
     else:
         click.secho("Nice job! Everything looks good.", fg="green")
-    '''
+    
 
 
 @catalogue.command()
@@ -148,3 +169,5 @@ def example(name, example):
         click.secho("example not found.")
         return
     click.secho(yaml.dump(data["example_inputs"][example], default_flow_style=False))
+
+'''
