@@ -44,15 +44,25 @@ def inputs():
 
 
 @catalogue.command()
-def combinations():
+@click.argument('params', nargs=-1)
+def combinations(params):
     """
     Returns all valid catalogue combinations for the given analysis.
     """
-    valid = ctlg.get_valid_combinations({
-    })
+    input_parameters = {}
+    for i in params:
+        lst = i.split('=')
+        if not len(lst) == 2:
+            click.secho('Invalid parameters.')
+            return
+        else:
+            input_parameters[lst[0]] = lst[1]
+
+    valid = ctlg.get_valid_combinations(input_parameters)
     fmt = '{0:20}{1:30}'
 
     for index, combination in enumerate(valid):
+        click.secho('-' * 50)
         click.secho(f'Combination {index + 1}:')
         click.secho(fmt.format('STEP', 'NAME'))
         for k, v in combination.items():
@@ -62,8 +72,8 @@ def combinations():
     # TODO: error occured when typing in the analysis_id
     click.confirm('Do you want to start the "make" process?', abort=True)
 
-    workflow_index = click.prompt('Please select the combination', type=int) - 1
-    while not 0 <= workflow_index < len(valid):
+    workflow_index = click.prompt('Please select the combination, or enter 0 to cancel', type=int) - 1
+    while not -1 <= workflow_index < len(valid):
         workflow_index = click.prompt('Invalid index. Try again', type=int) - 1
 
     env = valid[workflow_index]
