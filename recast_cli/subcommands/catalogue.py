@@ -78,11 +78,17 @@ def combinations(params):
         workflow_index = click.prompt('Invalid index. Try again', type=int) - 1
 
     env = valid[workflow_index]
-    name = []
-    '''
-    for k, v in env:
-        name =
-    '''
+    steps = []
+    names = []
+    env_settings = []
+    for k, v in env.items():
+        steps.append(k)
+        names.append(v)
+        env_settings.append({})
+
+    workflow_text = yaml.dump(workflow.make_workflow(steps, names, env_settings))
+    # TODO: Save this yaml to a file.
+    click.secho(workflow_text)
 
 
 def make(environment: Dict[str, str]):
