@@ -49,6 +49,7 @@ def combinations(params):
     """
     Returns all valid catalogue combinations for the given analysis.
     """
+    # TODO: common_inputs hasn't been implemented yet.
     input_parameters = {}
     for i in params:
         lst = i.split('=')
