@@ -9,7 +9,6 @@ import string
 import pkg_resources
 import getpass
 
-from ..config import config
 from ..workflow.recast_workflow.common import utils
 from ..workflow.recast_workflow.scripts import catalogue as ctlg
 from ..workflow.recast_workflow.scripts import workflow
@@ -51,8 +50,16 @@ def combinations():
     """
     valid = ctlg.get_valid_combinations({
     })
+    fmt = '{0:20}{1:30}'
+
+    for index, combination in enumerate(valid):
+        click.secho(f'Combination {index + 1}:')
+        click.secho(fmt.format('STEP', 'NAME'))
+        for k, v in combination.items():
+            click.secho(fmt.format(k, v))
+        click.secho()
+
     # TODO: error occured when typing in the analysis_id
-    click.echo(valid)
     click.confirm('Do you want to start the "make" process?', abort=True)
 
     workflow_index = click.prompt('Please select the combination', type=int) - 1
