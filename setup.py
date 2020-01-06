@@ -13,4 +13,5 @@ setup(
         [console_scripts]
         recast-cli=recast_cli.cli:recast_cli
     ''',
+    packages=find_packages(),
 )
