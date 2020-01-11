@@ -14,4 +14,5 @@ setup(
         recast-cli=recast_cli.cli:recast_cli
     ''',
     packages=find_packages(),
+    include_package_data=True,
 )

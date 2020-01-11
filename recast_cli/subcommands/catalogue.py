@@ -72,6 +72,11 @@ def combinations(params):
                 click.secho(fmt.format(k, v))
             click.secho()
 
+        click.secho("Current common inputs used:")
+        for k, v in input_parameters.items():
+            click.secho(f"{k}: {v}")
+        click.secho()
+
         param_to_add = click.prompt('Add an additional common input or enter \'done\' to continue', type=str)
         if param_to_add == '' or param_to_add.lower() == 'done':
             done_adding_params = True
@@ -82,7 +87,7 @@ def combinations(params):
         if len(param_to_add) == 2:
             input_parameters[param_to_add[0]] = param_to_add[1]
         else:
-            click.echo("Common input not recognized.")
+            click.secho("Common input not recognized.")
 
 
     click.confirm('Do you want to start the "make" process?', abort=True)
@@ -102,8 +107,10 @@ def combinations(params):
 
     workflow_text = yaml.dump(workflow.make_workflow(steps, names, env_settings))
 
-    # TODO: Save this yaml to a file.
-    save_file = Path(pkg_resources.resource_filename("recastatlas", "data/made_workflows")) / ('-'.join(names) + ".yml")
+    save_dir = Path(pkg_resources.resource_filename("recast_cli", "data/made_workflows"))
+    if not save_dir.exists():
+        os.mkdir(save_dir)
+    save_file = save_dir / ('-'.join(names) + ".yml")
     with open(save_file, 'w+') as f:
         f.write(workflow_text)
 

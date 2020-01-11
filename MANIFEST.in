@@ -1,0 +1,2 @@
+include recast_cli/data/catalogue/*
+include recast_cli/data/made_workflows/*
