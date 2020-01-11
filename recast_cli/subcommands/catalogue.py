@@ -5,6 +5,7 @@ import yaml
 import os
 from distutils.dir_util import copy_tree
 import string
+from pathlib import Path
 
 import pkg_resources
 import getpass
@@ -47,9 +48,8 @@ def inputs():
 @click.argument('params', nargs=-1)
 def combinations(params):
     """
-    Returns all valid catalogue combinations for the given analysis.
+    Returns all valid catalogue combinations for the given common inputs.
     """
-    # TODO: common_inputs hasn't been implemented yet.
     input_parameters = {}
     for i in params:
         lst = i.split('=')
@@ -59,18 +59,32 @@ def combinations(params):
         else:
             input_parameters[lst[0]] = lst[1]
 
-    valid = ctlg.get_valid_combinations(input_parameters)
-    fmt = '{0:20}{1:30}'
+    done_adding_params = False
+    while not done_adding_params:
+        valid = ctlg.get_valid_combinations(input_parameters)
+        fmt = '{0:20}{1:30}'
 
-    for index, combination in enumerate(valid):
-        click.secho('-' * 50)
-        click.secho(f'Combination {index + 1}:')
-        click.secho(fmt.format('STEP', 'NAME'))
-        for k, v in combination.items():
-            click.secho(fmt.format(k, v))
-        click.secho()
+        for index, combination in enumerate(valid):
+            click.secho('-' * 50)
+            click.secho(f'Combination {index + 1}:')
+            click.secho(fmt.format('STEP', 'NAME'))
+            for k, v in combination.items():
+                click.secho(fmt.format(k, v))
+            click.secho()
 
-    # TODO: error occured when typing in the analysis_id
+        param_to_add = click.prompt('Add an additional common input or enter \'done\' to continue', type=str)
+        if param_to_add == '' or param_to_add.lower() == 'done':
+            done_adding_params = True
+            continue
+        else:
+            param_to_add = param_to_add.split('=')
+
+        if len(param_to_add) == 2:
+            input_parameters[param_to_add[0]] = param_to_add[1]
+        else:
+            click.echo("Common input not recognized.")
+
+
     click.confirm('Do you want to start the "make" process?', abort=True)
 
     workflow_index = click.prompt('Please select the combination, or enter 0 to cancel', type=int) - 1
@@ -87,8 +101,14 @@ def combinations(params):
         env_settings.append({})
 
     workflow_text = yaml.dump(workflow.make_workflow(steps, names, env_settings))
+
     # TODO: Save this yaml to a file.
-    click.secho(workflow_text)
+    save_file = Path(pkg_resources.resource_filename("recastatlas", "data/made_workflows")) / ('-'.join(names) + ".yml")
+    with open(save_file, 'w+') as f:
+        f.write(workflow_text)
+
+    click.secho(f"Workflow saved to {save_file}")
+    #click.secho(workflow_text)
 
 
 def make(environment: Dict[str, str]):
