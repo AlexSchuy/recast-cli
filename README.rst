@@ -27,7 +27,7 @@ Before Development
 ------------------
 1. Go through `this <https://smeehan12.github.io/2019-08-12-dmatlhc-tutorial/index.html>`_ tutorial. You will need to have Docker installed on you computer before you begin. In the tutorial, you run madgraph+pythia, rivet, and contur on one docker image.
 
-2. Git clone `recast-workflow <https://github.com/recast-hep/recast-workflow/tree/dev>`_ (specifically the dev branch) using ``git clone https://github.com/recast-hep/recast-workflow.git --branch dev --single-branch``. You will need to install `pipenv <https://pypi.org/project/pipenv/>`_ and run ``./recast_workflow/scripts/setup.sh``. This will add recast-workflow/recast_workflow to your PYTHONPATH enviromental variable. Enter pipenv using ``pipenv shell`` and run ``pytest``. Most of the tests should pass.
+2. Git clone `recast-workflow <https://github.com/recast-hep/recast-workflow/tree/dev>`_ (specifically the dev branch) using ``git clone https://github.com/recast-hep/recast-workflow.git --branch dev --single-branch``. You will need to install `pipenv <https://pypi.org/project/pipenv/>`_ and run ``source /recast_workflow/scripts/setup.sh``. This will add recast-workflow/recast_workflow to your PYTHONPATH enviromental variable. Enter pipenv using ``pipenv shell`` and run ``pytest``. Most of the tests should pass.
 
    One of the pacakges `jq <https://pypi.org/project/jq/>`_ requires a few programs to be installed. On mac, you can install each program seperately using homebrew.
 
