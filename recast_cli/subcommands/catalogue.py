@@ -49,6 +49,8 @@ def inputs():
 def combinations(params):
     """
     Returns all valid catalogue combinations for the given common inputs.
+    Filters combinations using common inputs.
+    Makes one combination into yadage file.
     """
     input_parameters = {}
     for i in params:
@@ -59,10 +61,14 @@ def combinations(params):
         else:
             input_parameters[lst[0]] = lst[1]
 
+    # Add common inputs
     done_adding_params = False
     while not done_adding_params:
         valid = ctlg.get_valid_combinations(input_parameters)
         fmt = '{0:20}{1:30}'
+
+        if len(valid) < 1:
+            click.secho('No valid combinations for given common inputs')
 
         for index, combination in enumerate(valid):
             click.secho('-' * 50)
@@ -70,7 +76,7 @@ def combinations(params):
             click.secho(fmt.format('STEP', 'NAME'))
             for k, v in combination.items():
                 click.secho(fmt.format(k, v))
-            click.secho()
+        click.secho()
 
         click.secho("Current common inputs used:")
         for k, v in input_parameters.items():
@@ -89,12 +95,13 @@ def combinations(params):
         else:
             click.secho("Common input not recognized.")
 
-
     click.confirm('Do you want to start the "make" process?', abort=True)
 
     workflow_index = click.prompt('Please select the combination, or enter 0 to cancel', type=int) - 1
     while not -1 <= workflow_index < len(valid):
         workflow_index = click.prompt('Invalid index. Try again', type=int) - 1
+    if workflow_index < 0:
+        return
 
     env = valid[workflow_index]
     steps = []
@@ -107,6 +114,7 @@ def combinations(params):
 
     workflow_text = yaml.dump(workflow.make_workflow(steps, names, env_settings))
 
+    # save workflow
     save_dir = Path(pkg_resources.resource_filename("recast_cli", "data/made_workflows"))
     if not save_dir.exists():
         os.mkdir(save_dir)
@@ -115,7 +123,26 @@ def combinations(params):
         f.write(workflow_text)
 
     click.secho(f"Workflow saved to {save_file}")
+
+    save_workflow(save_file)
     #click.secho(workflow_text)
+
+def save_workflow(workflow_file: Path):
+    """
+    Create runnable yadage directory given path to workflow.yml
+    """
+    workflow_file = Path(os.path.abspath(workflow_file))
+    save_dir = Path(os.path.abspath(os.path.join(workflow_file, '..')))
+    save_dir /= Path(os.path.basename(workflow_file).rstrip(".yml"))
+
+    if save_dir.exists():
+        click.secho("Workflow folder already saved with that name. Rename file and try again.")
+        return
+
+    os.mkdir(save_dir)
+    os.rename(workflow_file, save_dir / "workflow.yml")
+
+    click.secho(f"Made yadage directory at {save_dir} using {workflow_file}")
 
 
 def make(environment: Dict[str, str]):
