@@ -32,3 +32,9 @@ Before Development
    One of the pacakges `jq <https://pypi.org/project/jq/>`_ requires a few programs to be installed. On mac, you can install each program seperately using homebrew.
 
 3. Now, clone recast-cli (the subrepository workflow will not be included and that is ok). You will need to move recast-workflow into it and rename it to workflow by running ``mv -r recast-workflow recast-cli/recast_cli/workflow``.
+
+Notes for Windows Users
+-----------------------
+1. Docker is not supported on Windows 10 home edition, and thus using docker through WSL is not viable. For the tutorial as well as any other tasks that require docker, it is recommended to use a Linux virtual machine (for example with VirtualBox). Development outside of docker can be done in WSL. Currently a workaround for WSL is being experimented with but tentatively a Virtual Machine appears to be the only guaranteed working solution.
+
+2. In a Ubuntu 18.04 Virtual Machine (from VirtualBox), pipenv may fail to install the `jq <http://pypi.org/project/jq/>`_ package. However, on Ubuntu 16.04 and 18.04 WSL the pipenv installation works fine.
