@@ -114,17 +114,18 @@ def combinations(params):
 
     workflow_text = yaml.dump(workflow.make_workflow(steps, names, env_settings))
 
-    # save workflow
-    save_dir = Path(pkg_resources.resource_filename("recast_cli", "data/made_workflows"))
-    if not save_dir.exists():
-        os.mkdir(save_dir)
+    # save workflow yaml as file
+    save_dir = Path(os.getcwd())
     save_file = save_dir / ('-'.join(names) + ".yml")
     with open(save_file, 'w+') as f:
         f.write(workflow_text)
 
     click.secho(f"Workflow saved to {save_file}")
 
+    # create runnable directory
+    click.confirm("Create runnable yadage directory?", abort=True)
     save_workflow(save_file)
+
     #click.secho(workflow_text)
 
 def save_workflow(workflow_file: Path):
