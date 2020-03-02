@@ -1,2 +1,2 @@
 include recast_cli/data/catalogue/*
-include recast_cli/data/made_workflows/*
+include recast_cli/templates/yadage_dir/*

@@ -128,6 +128,9 @@ def combinations(params):
 
     #click.secho(workflow_text)
 
+
+@catalogue.command()
+@click.argument('workflow_file', nargs=1)
 def save_workflow(workflow_file: Path):
     """
     Create runnable yadage directory given path to workflow.yml
@@ -135,13 +138,19 @@ def save_workflow(workflow_file: Path):
     workflow_file = Path(os.path.abspath(workflow_file))
     save_dir = Path(os.path.abspath(os.path.join(workflow_file, '..')))
     save_dir /= Path(os.path.basename(workflow_file).rstrip(".yml"))
+    template = Path(pkg_resources.resource_filename("recast_cli", "data/templates/yadage_dir"))
 
     if save_dir.exists():
         click.secho("Workflow folder already saved with that name. Rename file and try again.")
         return
 
-    os.mkdir(save_dir)
-    os.rename(workflow_file, save_dir / "workflow.yml")
+    # Create directory
+    try:
+        os.mkdir(save_dir)
+        copy_tree(str(template), str(save_dir))
+        os.rename(workflow_file, save_dir / "workflows" / "workflow.yml")
+    except FileNotFoundError:
+        raise FileNotFoundError("Workflow file does not exist.")
 
     click.secho(f"Made yadage directory at {save_dir} using {workflow_file}")
 
