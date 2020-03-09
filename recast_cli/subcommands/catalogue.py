@@ -46,7 +46,8 @@ def inputs():
 
 @catalogue.command()
 @click.argument('params', nargs=-1)
-def combinations(params):
+@click.pass_context
+def combinations(ctx, params):
     """
     Returns all valid catalogue combinations for the given common inputs.
     Filters combinations using common inputs.
@@ -124,16 +125,16 @@ def combinations(params):
 
     # create runnable directory
     click.confirm("Create runnable yadage directory?", abort=True)
-    save_workflow(save_file)
+    ctx.invoke(save, workflow_file=save_file)
 
-    #click.secho(workflow_text)
+    # click.secho(workflow_text)
 
 
 @catalogue.command()
 @click.argument('workflow_file', nargs=1)
-def save_workflow(workflow_file: Path):
+def save(workflow_file: Path):
     """
-    Create runnable yadage directory given path to workflow.yml
+    Create runnable yadage directory given path to workflow yaml
     """
     workflow_file = Path(os.path.abspath(workflow_file))
     save_dir = Path(os.path.abspath(os.path.join(workflow_file, '..')))
