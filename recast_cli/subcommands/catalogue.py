@@ -98,6 +98,7 @@ def combinations(ctx, params):
 
     click.confirm('Do you want to start the "make" process?', abort=True)
 
+    # Pick a combination number
     workflow_index = click.prompt('Please select the combination, or enter 0 to cancel', type=int) - 1
     while not -1 <= workflow_index < len(valid):
         workflow_index = click.prompt('Invalid index. Try again', type=int) - 1
