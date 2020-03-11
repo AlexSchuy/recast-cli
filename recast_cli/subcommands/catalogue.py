@@ -157,6 +157,20 @@ def save(workflow_file: Path):
     click.secho(f"Made yadage directory at {save_dir} using {workflow_file}")
 
 
+@catalogue.command()
+@click.argument('workflow_file', nargs=1)
+def get_inputs(workflow_file: Path):
+    """
+    Generates input.yml file that contains all input required to run the given workflow.
+    """
+    workflow_file = Path(os.path.abspath(workflow_file))
+    with workflow_file.open() as f:
+        workflow_yaml = yaml.safe_load(f)
+        input_list = workflow.get_inputs(workflow_yaml)
+        input_text = yaml.dump({k: '' for k in input_list})
+        with open(Path(os.getcwd()) / 'inputs.yml', "w+") as input_file:
+            input_file.write(input_text)
+
 def make(environment: Dict[str, str]):
     # TODO: Problem
 
