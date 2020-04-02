@@ -3,6 +3,7 @@ import click
 from .subcommands.backends import backends
 from .subcommands.catalogue import catalogue
 from .subcommands.run import run
+from .subcommands.manual import manual
 
 
 @click.group()
@@ -14,3 +15,4 @@ def recast_cli():
 recast_cli.add_command(backends)
 recast_cli.add_command(catalogue)
 recast_cli.add_command(run)
+recast_cli.add_command(manual)

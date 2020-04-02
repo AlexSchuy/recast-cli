@@ -7,6 +7,7 @@ cache/
 __pycache__
 *.pyc
 *egg-info
+recast_cli/data/made_workflows/*
 
 venv/
 .idea/
