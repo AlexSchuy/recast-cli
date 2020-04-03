@@ -158,7 +158,18 @@ def ls():
     click.echo('-' * 50)
     click.echo(fmt.format("WORKFLOW NAMES", "TIME LAST MODIFIED"))
     for wf in os.listdir(catalogue_dir):
-        click.echo(fmt.format(wf.rstrip(".yml"), time.ctime(os.path.getmtime(catalogue_dir / wf))))  
+        click.echo(fmt.format(wf.rstrip(".yml"), time.ctime(os.path.getmtime(catalogue_dir / wf))))
+
+@catalogue.command()
+def clear():
+    """
+    Clear all workflow from catalogue.
+    """
+    click.confirm('Are you sure you want to clear the catalogue? '
+                  'This will remove all previously built workflows.', abort=True)
+    for wf in os.listdir(catalogue_dir):
+        os.remove(catalogue_dir / wf)
+        print(f"Successfully removed {wf.rstrip('.yml')} from catalogue")
 
 @catalogue.command()
 @click.argument('workflow_name', nargs=1)
