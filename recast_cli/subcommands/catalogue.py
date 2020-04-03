@@ -18,7 +18,7 @@ from ..workflow.recast_workflow.scripts import workflow
 
 default_meta = {"author": "unknown", "short_description": "no description"}
 
-catalogue_dir = Path(pkg_resources.resource_filename("recast_cli", "data/made_workflows"))
+catalogue_dir = Path(pkg_resources.resource_filename("recast_cli", "data/catalogue"))
 if not catalogue_dir.exists():
     os.mkdir(catalogue_dir)
 
@@ -141,6 +141,7 @@ def getyml(workflow_name: str, destination: str):
     """
     # check workflow_name.yml is in catalogue
     workflow_file = get_workflow_file_path(workflow_name)
+    if not workflow_file: return
 
     # copy file
     if not destination:
@@ -155,8 +156,9 @@ def ls():
     List all available workflows
     """
     fmt = '{0:40}{1:40}'
-    click.echo('-' * 50)
+    click.echo('-' * 75)
     click.echo(fmt.format("WORKFLOW NAMES", "TIME LAST MODIFIED"))
+    click.echo('-' * 75)
     for wf in os.listdir(catalogue_dir):
         click.echo(fmt.format(wf.rstrip(".yml"), time.ctime(os.path.getmtime(catalogue_dir / wf))))
 
@@ -173,12 +175,25 @@ def clear():
 
 @catalogue.command()
 @click.argument('workflow_name', nargs=1)
-def get(workflow_name: string):
+def rm(workflow_name: str):
+    """
+    Remove workflow from catalogue
+    """
+    workflow_file = get_workflow_file_path(workflow_name)
+    if not workflow_file: return
+
+    os.remove(workflow_file)
+
+@catalogue.command()
+@click.argument('workflow_name', nargs=1)
+@click.argument('save_dir', default=os.getcwd())
+def getdir(workflow_name: str, save_dir: str):
     """
     Get runnable yadage directory given workflow name
     """
     workflow_file = get_workflow_file_path(workflow_name)
-    save_dir = Path(os.path.abspath(os.path.join(workflow_file, '..')))
+    if not workflow_file: return
+    save_dir = Path(os.path.abspath(save_dir))
     save_dir /= Path(os.path.basename(workflow_file).rstrip(".yml"))
     template = Path(pkg_resources.resource_filename("recast_cli", "data/templates/yadage_dir"))
 
@@ -189,9 +204,9 @@ def get(workflow_name: string):
     # Create directory
     os.mkdir(save_dir)
     copy_tree(str(template), str(save_dir))
-    os.rename(workflow_file, save_dir / "workflows" / "workflow.yml")
+    shutil.copyfile(workflow_file, save_dir / "workflows" / "workflow.yml")
 
-    click.secho(f"Made yadage directory at {save_dir} using {workflow_file}")
+    click.secho(f"Made yadage directory at {save_dir} for {workflow_name}")
 
 
 @catalogue.command()
@@ -201,6 +216,7 @@ def get_inputs(workflow_name: str):
     Generates input.yml file that contains all input required to run the given workflow.
     """
     workflow_file = get_workflow_file_path(workflow_name)
+    if not workflow_file: return
 
     with workflow_file.open() as f:
         workflow_yaml = yaml.safe_load(f)
@@ -215,12 +231,12 @@ def make(environment: Dict[str, str]):
     click.echo(workflow.make_workflow(environment.keys, environment.values, environment))
 
 
-# Commands not explicitly part of the cli, should probably be moved and imported from somewhere else later
+# Functions not explicitly part of the cli, should probably be moved and imported from somewhere else later
 def get_workflow_file_path(workflow_name: str):
     """
     Echos message if workflow is not found in the catalogue
 
-    :return: workflow file path or null
+    :return: workflow file path or None
     """
     workflow_file = Path(os.path.abspath(catalogue_dir / (workflow_name + ".yml")))
     if not workflow_file.exists():
