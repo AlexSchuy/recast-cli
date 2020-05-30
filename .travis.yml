@@ -13,7 +13,7 @@ install:
  - pip install pipenv pytest pytest-cov codecov
  - pipenv install
 script: 
-  - . recast_cli/scripts/setup.sh
+  - . recast_cli/workflow/recast_workflow/scripts/setup.sh
   - pytest --cov=./
   - codecov
 cache:

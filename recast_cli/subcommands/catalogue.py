@@ -15,12 +15,9 @@ import getpass
 from ..workflow.recast_workflow.common import utils
 from ..workflow.recast_workflow.scripts import catalogue as ctlg
 from ..workflow.recast_workflow.scripts import workflow
+from ..subcommands import *
 
 default_meta = {"author": "unknown", "short_description": "no description"}
-
-catalogue_dir = Path(pkg_resources.resource_filename("recast_cli", "data/catalogue"))
-if not catalogue_dir.exists():
-    os.mkdir(catalogue_dir)
 
 @click.group(help="The RECAST Analysis Catalogue")
 def catalogue():
@@ -229,20 +226,6 @@ def make(environment: Dict[str, str]):
     # TODO: Problem
 
     click.echo(workflow.make_workflow(environment.keys, environment.values, environment))
-
-
-# Functions not explicitly part of the cli, should probably be moved and imported from somewhere else later
-def get_workflow_file_path(workflow_name: str):
-    """
-    Echos message if workflow is not found in the catalogue
-
-    :return: workflow file path or None
-    """
-    workflow_file = Path(os.path.abspath(catalogue_dir / (workflow_name + ".yml")))
-    if not workflow_file.exists():
-        click.secho(f"Workflow named {workflow_name} not found in catalogue.")
-        return
-    return workflow_file
 
 
 '''
