@@ -1,0 +1,127 @@
+stages:
+- dependencies:
+  - init
+  name: multi_madgraph_pythia_rivet_contur
+  scatter:
+    method: zip
+    parameters:
+    - param_card
+  scheduler:
+    parameters:
+    - n_events
+    - proc_card
+    - n_events
+    - analysis_id
+  scheduler_type: multistep-stage
+  workflow:
+    stages:
+    - dependencies:
+      - init
+      name: madgraph
+      scheduler:
+        parameters:
+          n_events:
+            output: n_events
+            step: init
+          outputlhe: '{workdir}/events.lhe'
+          proc_card:
+            output: proc_card
+            step: init
+        scheduler_type: singlestep-stage
+        step:
+          environment:
+            environment_type: docker-encapsulated
+            image: recast/madgraph
+            imagetag: 2.6.7_v2
+          process:
+            cmd: python steer_madgraph.py {proc_card} {outputlhe} -n {n_events}
+            process_type: string-interpolated-cmd
+          publisher:
+            outputmap:
+              lhefile: outputlhe
+            publisher_type: frompar-pub
+    - dependencies:
+      - init
+      - madgraph
+      name: pythia
+      scheduler:
+        parameters:
+          inputlhe:
+            output: lhefile
+            step: madgraph
+          n_events:
+            output: n_events
+            step: init
+          outputhepmc: '{workdir}/output.hepmc'
+        scheduler_type: singlestep-stage
+        step:
+          environment:
+            environment_type: docker-encapsulated
+            image: recast/madgraph-pythia
+            imagetag: 2.6.6
+          process:
+            cmd: python steer_pythia.py {inputlhe} {outputhepmc} {n_events}
+            process_type: string-interpolated-cmd
+          publisher:
+            outputmap:
+              hepmc: outputhepmc
+            publisher_type: frompar-pub
+    - dependencies:
+      - init
+      - pythia
+      name: rivet
+      scheduler:
+        parameters:
+          analysis_id:
+            output: analysis_id
+            step: init
+          hepmc:
+            output: hepmc
+            step: pythia
+          outputyoda: '{workdir}/rivet_analysis.yoda'
+        scheduler_type: singlestep-stage
+        step:
+          environment:
+            environment_type: docker-encapsulated
+            image: recast/rivet
+            imagetag: latest
+          process:
+            cmd: rivet -a {analysis_id} -H {outputyoda} {hepmc}
+            process_type: string-interpolated-cmd
+          publisher:
+            publish:
+              yoda: outputyoda
+            publisher_type: interpolated-pub
+    - dependencies:
+      - init
+      - rivet
+      name: contur
+      scheduler:
+        parameters:
+          output_analysis: '{workdir}/ANALYSIS'
+          output_plots: '{workdir}/plots'
+          yoda:
+            output: yoda
+            step: rivet
+        scheduler_type: singlestep-stage
+        step:
+          environment:
+            environment_type: docker-encapsulated
+            image: recast/contur
+            imagetag: latest
+          process:
+            process_type: interpolated-script-cmd
+            script: 'source ./setupContur.sh
+
+              contur {yoda}
+
+              cp -r ./ANALYSIS {output_analysis}
+
+              cp -r ./plots {output_plots}
+
+              '
+          publisher:
+            publish:
+              analysis: output_analysis
+              plots: output_plots
+            publisher_type: interpolated-pub

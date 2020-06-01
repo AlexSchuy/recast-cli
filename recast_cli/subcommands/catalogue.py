@@ -19,6 +19,7 @@ from ..subcommands import *
 
 default_meta = {"author": "unknown", "short_description": "no description"}
 
+
 @click.group(help="The RECAST Analysis Catalogue")
 def catalogue():
     pass
@@ -45,6 +46,21 @@ def inputs():
                 str(value.get('steps', 'no steps'))
             )
         )
+
+
+@catalogue.command()
+@click.argument('workflow_path', nargs=-1)
+def add(workflow_path: str, workflow_dict={}):
+    if workflow_dict:
+        # save wflow dict to catalogue
+        name = workflow.make_name(workflow_dict)
+        save_workflow(workflow_dict, catalogue_dir / f"{name}.yml")
+        click.secho(f"Successfully saved {name} to catalogue.")
+        return
+
+    wf_dict = get_wf_dict(workflow_path)
+    save_workflow(wf_dict, catalogue_dir / workflow_path.split('/')[-1])
+    click.secho(f"Successfully saved {workflow_path} to catalogue.")
 
 
 @catalogue.command()
@@ -129,6 +145,7 @@ def combinations(ctx, params):
 
     click.secho(f"Workflow {workflow_name} saved to catalogue.")
 
+
 @catalogue.command()
 @click.argument('workflow_name', nargs=1)
 @click.argument('destination', nargs=1, required=False)
@@ -147,6 +164,7 @@ def getyml(workflow_name: str, destination: str):
     shutil.copyfile(workflow_file, destination + (f"/{workflow_name}.yml"))
     print(f"Workflow {workflow_name} copied to {destination}.")
 
+
 @catalogue.command()
 def ls():
     """
@@ -159,6 +177,7 @@ def ls():
     for wf in os.listdir(catalogue_dir):
         click.echo(fmt.format(wf.rstrip(".yml"), time.ctime(os.path.getmtime(catalogue_dir / wf))))
 
+
 @catalogue.command()
 def clear():
     """
@@ -170,6 +189,7 @@ def clear():
         os.remove(catalogue_dir / wf)
         print(f"Successfully removed {wf.rstrip('.yml')} from catalogue")
 
+
 @catalogue.command()
 @click.argument('workflow_name', nargs=1)
 def rm(workflow_name: str):
@@ -180,6 +200,7 @@ def rm(workflow_name: str):
     if not workflow_file: return
 
     os.remove(workflow_file)
+
 
 @catalogue.command()
 @click.argument('workflow_name', nargs=1)
@@ -221,6 +242,7 @@ def get_inputs(workflow_name: str):
         input_text = yaml.dump({k: '' for k in input_list})
         with open(Path(os.getcwd()) / 'inputs.yml', "w+") as input_file:
             input_file.write(input_text)
+
 
 def make(environment: Dict[str, str]):
     # TODO: Problem
