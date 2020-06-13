@@ -8,6 +8,7 @@ __pycache__
 *.pyc
 *egg-info
 recast_cli/data/made_workflows/*
+recast-cli-venv/*
 
 venv/
 .idea/

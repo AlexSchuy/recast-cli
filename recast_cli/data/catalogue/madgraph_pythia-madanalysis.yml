@@ -1,0 +1,91 @@
+stages:
+- dependencies:
+  - init
+  name: madgraph
+  scheduler:
+    parameters:
+      n_events:
+        output: n_events
+        step: init
+      outputlhe: '{workdir}/events.lhe'
+      proc_card:
+        output: proc_card
+        step: init
+    scheduler_type: singlestep-stage
+    step:
+      environment:
+        environment_type: docker-encapsulated
+        image: recast/madgraph
+        imagetag: 2.6.7_v2
+      process:
+        cmd: python steer_madgraph.py {proc_card} {outputlhe} -n {n_events}
+        process_type: string-interpolated-cmd
+      publisher:
+        outputmap:
+          lhefile: outputlhe
+        publisher_type: frompar-pub
+- dependencies:
+  - init
+  - madgraph
+  name: pythia
+  scheduler:
+    parameters:
+      inputlhe:
+        output: lhefile
+        step: madgraph
+      n_events:
+        output: n_events
+        step: init
+      outputhepmc: '{workdir}/output.hepmc'
+    scheduler_type: singlestep-stage
+    step:
+      environment:
+        environment_type: docker-encapsulated
+        image: recast/madgraph-pythia
+        imagetag: 2.6.6
+      process:
+        cmd: python steer_pythia.py {inputlhe} {outputhepmc} {n_events}
+        process_type: string-interpolated-cmd
+      publisher:
+        outputmap:
+          hepmc: outputhepmc
+        publisher_type: frompar-pub
+- dependencies:
+  - init
+  - pythia
+  name: madanalysis5
+  scheduler:
+    parameters:
+      hepmc:
+        output: hepmc
+        step: pythia
+      ma5_recast_card:
+        output: ma5_recast_card
+        step: init
+      ma5_run_card:
+        output: ma5_run_card
+        step: init
+      output_folder: '{workdir}/ANALYSIS'
+    scheduler_type: singlestep-stage
+    step:
+      environment:
+        environment_type: docker-encapsulated
+        image: recast/madanalysis5
+        imagetag: latest
+      process:
+        process_type: interpolated-script-cmd
+        script: 'cp {ma5_run_card} ./ma5_run_card.dat
+
+          cp {ma5_recast_card} ./ma5_recast_card.dat
+
+          sed -i ''s#*.hepmc#{hepmc}#g'' ./ma5_run_card.dat
+
+          ./bin/ma5 -R -s ./ma5_run_card.dat
+
+          cp -r ANALYSIS_0 {output_folder}
+
+          '
+      publisher:
+        publish:
+          analysis: output_folder
+        publisher_type: interpolated-pub
