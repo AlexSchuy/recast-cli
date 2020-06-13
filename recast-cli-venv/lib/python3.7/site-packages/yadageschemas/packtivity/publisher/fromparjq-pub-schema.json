@@ -1,0 +1,33 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "title": "Parameter Publisher",
+  "additionalProperties": false,
+  "properties": {
+    "publisher_type": {
+      "type": "string",
+      "enum": [
+        "fromparjq-pub"
+      ]
+    },
+    "script": {
+      "type": "string",
+      "default": "."
+    },
+    "tryExact": {
+      "type": "boolean",
+      "default": true
+    },
+    "glob": {
+      "type": "boolean",
+      "default": false
+    },
+    "relative_paths": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": [
+    "publisher_type"
+  ]
+}

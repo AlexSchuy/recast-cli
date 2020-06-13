@@ -1,0 +1,19 @@
+stages:
+  - name: madgraph
+    dependencies: ["init"]
+    scheduler:
+      scheduler_type: "singlestep-stage"
+      parameters:
+        outputlhe: "{workdir}/events.lhe"
+        n_events: { step: init, output: n_events }
+        proc_card: { step: init, output: proc_card }
+      step: { $ref: "madgraph.yml" }
+  - name: pythia
+    dependencies: ["init", "madgraph"]
+    scheduler:
+      scheduler_type: "singlestep-stage"
+      parameters:
+        inputlhe: {step: madgraph, output: lhefile}
+        outputhepmc: "{workdir}/output.hepmc"
+        n_events: { step: init, output: n_events }
+      step: { $ref: "pythia.yml" }

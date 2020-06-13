@@ -1,0 +1,52 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "title": "Multiple Step Scheduler",
+  "additionalProperties": false,
+  "properties": {
+    "scheduler_type": {
+      "type": "string",
+      "enum": [
+        "multistep-stage"
+      ]
+    },
+    "batchsize": {"type":"number"},
+    "partitionsize": {"type":"number"},
+    "parameters": {"$ref":"parameterselection.json"},
+    "cases": {"$ref": "cases.json"},
+    "register_values": {"$ref": "value_registration.json"},
+    "step": {"$ref":"../../packtivity/packtivity-schema.json"},
+    "workflow": {"$ref":"../workflow-schema.json#"},
+    "workflow_opts": {"type": "object"},
+    "partitionsize": {
+      "type": "number"
+    },
+    "scatter": {
+      "type":"object",
+      "additionalProperties": false,
+      "properties":{
+        "parameters":{"type":"array","items":{"type":"string"}},
+        "method":{"type":"string"}
+      }
+    }
+  },
+  "oneOf": [{
+      "required": ["workflow"],
+      "not": {"required": ["step","cases"]}
+  },
+  {
+      "required": ["step"],
+      "not": {"required": ["workflow","cases"]}
+  },
+  {
+      "required": ["cases"],
+      "not": {"required": ["workflow","step"]}
+  }
+  ],
+  "oneOf": [
+  {
+      "not": {"required": ["batchsize","partitionsize"]}
+  }
+  ],
+  "required": ["scheduler_type"]
+}

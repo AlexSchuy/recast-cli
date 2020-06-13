@@ -1,0 +1,16 @@
+environment:
+  environment_type: docker-encapsulated
+  image: recast/madanalysis5
+  imagetag: 'latest'
+process:
+  process_type: interpolated-script-cmd
+  script: |
+    cp {ma5_run_card} ./ma5_run_card.dat
+    cp {ma5_recast_card} ./ma5_recast_card.dat
+    sed -i 's#*.hepmc#{hepmc}#g' ./ma5_run_card.dat
+    ./bin/ma5 -R -s ./ma5_run_card.dat
+    cp -r ANALYSIS_0 {output_folder}
+publisher:
+  publish:
+    analysis: output_folder
+  publisher_type: interpolated-pub

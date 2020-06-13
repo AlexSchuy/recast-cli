@@ -1,0 +1,34 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "title": "Yadage Stage",
+  "additionalProperties": false,
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "dependencies": {
+      "type": "object",
+      "oneOf":[
+        {"$ref":"predicates/jsonpathready-schema.json#"},
+        {"$ref":"predicates/exprfulfilled-schema.json#"}
+      ],
+      "default": {
+        "dependency_type": "jsonpath_ready",
+        "expressions": []
+      }
+    },
+    "scheduler": {
+      "type": "object",
+      "oneOf":[
+        {"$ref":"scheduler/singlestep-stage-schema.json#"},
+        {"$ref":"scheduler/multistep-stage-schema.json#"},
+        {"$ref":"scheduler/jq-stage-schema.json#"}
+      ]
+    }
+  },
+  "required": [
+    "name",
+    "scheduler"
+  ]
+}

@@ -1,2 +1,1 @@
-include recast_cli/data/catalogue/*
-include recast_cli/templates/yadage_dir/*
+recursive-include recast_cli/workflow/recast_workflow/images *

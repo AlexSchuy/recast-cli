@@ -1,0 +1,3 @@
+[console_scripts]
+yadage-validate = yadageschemas.validatecli:main
+

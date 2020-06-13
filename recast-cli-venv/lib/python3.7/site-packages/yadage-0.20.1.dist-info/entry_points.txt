@@ -1,0 +1,5 @@
+[console_scripts]
+yadage-manual = yadage.manualcli:mancli
+yadage-run = yadage.steering:main
+yadage-util = yadage.utilcli:utilcli
+

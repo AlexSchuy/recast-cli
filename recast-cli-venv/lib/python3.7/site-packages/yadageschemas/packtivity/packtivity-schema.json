@@ -1,0 +1,42 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "title": "Packtivity Meta Description",
+  "additionalProperties": false,
+  "properties": {
+      "process": {
+          "oneOf":[
+            {"$ref": "process/stringinterp-schema.json#"},
+            {"$ref": "process/scriptproc-schema.json#"},
+            {"$ref": "process/manual-instructions-proc-schema.json#"},
+            {"type": "null"}
+          ]
+      },
+      "publisher": {
+          "type": "object",
+          "oneOf":[
+            {"$ref": "publisher/constant-pub-schema.json#"},
+            {"$ref": "publisher/frompar-pub-schema.json#"},
+            {"$ref": "publisher/fromparjq-pub-schema.json#"},
+            {"$ref": "publisher/fromyaml-pub-schema.json#"},
+            {"$ref": "publisher/fromglob-pub-schema.json#"},
+            {"$ref": "publisher/interpolated-pub-schema.json#"},
+            {"$ref": "publisher/manual-instructions-pub-schema.json#"}
+          ]
+      },
+      "environment": {
+          "oneOf":[
+            {"$ref": "environment/noop-env-schema.json#"},
+            {"$ref": "environment/localproc-schema.json#"},
+            {"$ref": "environment/docker-enc-schema.json#"},
+            {"$ref": "environment/manual-instructions-env-schema.json#"},
+            {"type": "null"}
+          ]
+      }
+  },
+  "required":[
+    "process",
+    "publisher",
+    "environment"
+  ]
+}

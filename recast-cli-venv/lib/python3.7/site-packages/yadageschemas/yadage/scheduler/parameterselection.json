@@ -1,0 +1,21 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type":"array",
+  "title": "Parameter Selection",
+  "items":{
+    "type":"object",
+    "title": "Parmeter Values / Refs",
+    "additionalProperties": false,
+    "properties": {
+      "key":{"type":"string"},
+      "value":{
+        "oneOf":[
+          {"type":"string"},
+          {"type":"array"},
+          {"type":"number"},
+          {"type":"object"}
+        ]
+      }
+    }
+  }
+}
